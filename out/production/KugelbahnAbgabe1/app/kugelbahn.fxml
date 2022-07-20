@@ -1,0 +1,270 @@
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.canvas.Canvas?>
+
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="app.MainController"
+            fx:id="scene" prefWidth="1280" prefHeight="700" minWidth="1500" minHeight="720"
+            stylesheets="@../resource/stylesheet.css">
+
+    <Canvas fx:id="canvas" width="1500" height="700"/>
+    <!--Kugeln-->
+    <Circle fx:id="circleRed" id="circle" layoutY="640.00" layoutX="320.00" stroke="black" strokeType="INSIDE"
+            fill="#ED5C75"
+            radius="15"/>
+    <Circle fx:id="circleBlue" id="circle" layoutY="115" layoutX="120" stroke="black" strokeType="INSIDE" fill="#426EF5"
+            radius="15"/>
+    <Circle fx:id="circleGrey" id="circle" layoutY="546.00" layoutX="990" stroke="black" strokeType="INSIDE"
+            fill="#BDC7E1"
+            radius="30"/>
+    <!--Background Color für die Einstellungen Rechts-->
+    <AnchorPane layoutX="1300" layoutY="0" minHeight="720" minWidth="200" id="anchorSetting">
+    </AnchorPane>
+    <!--Start, Pause und Reset Button-->
+    <Button fx:id="play" id="btn-Start" styleClass="btn-media" layoutX="1320" layoutY="620"
+            onAction="#onStartButtonClick"
+            scaleY="-1">
+        <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../resource/images/play.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+    <Button fx:id="pause" id="btn-Pause" layoutX="1320" layoutY="620" onAction="#onPauseButtonClick" scaleY="-1">
+        <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../resource/images/pause.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+
+    <Button id="btn-Reset" layoutX="1400" layoutY="620" onAction="#onResetButtonClick" scaleY="-1">
+        <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../resource/images/update-arrow.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+
+    <!--Bild Feder-->
+    <ImageView fx:id="imageView" fitHeight="80.0" fitWidth="40.0"
+               layoutX="105.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@../resource/images/Feder.png" backgroundLoading="true"/>
+        </image>
+    </ImageView>
+
+
+    <!--Einstellungen und Anzeige der Geschwindigkeit ec.-->
+
+    <TabPane layoutX="1301" layoutY="387" maxWidth="197" scaleY="-1">
+        <!--Einstellungen des Balkens-->
+        <Tab text="Balken" closable="false">
+            <VBox id="vbox-settings" layoutX="1300" layoutY="058" minWidth="200">
+                <Label id="head-text" maxWidth="200" text="Balken"/>
+                <HBox>
+                    <Label text="Winkel: "/>
+                    <TextField fx:id="angle" maxWidth="50" text="170.0 "/>
+                </HBox>
+
+            </VBox>
+        </Tab>
+
+        <!--Einstellungen der Feder-->
+        <Tab text="Feder" closable="false">
+            <VBox id="vbox-settings" layoutX="1300" layoutY="058" minWidth="200">
+                <HBox>
+                <Label id="head-text" maxWidth="200" text="Feder"/>
+                <Label fx:id="statusFeder" id="status-feder-text" maxWidth="200" text="gespannt"/>
+                </HBox>
+                <Label text="Federkonstante (N/m): "/>
+                <TextField fx:id="feder" maxWidth="60" text="1000.0"/>
+                <Label text="Federweg (m): "/>
+                <TextField fx:id="feder2" maxWidth="60" text="1.0"/>
+                <HBox>
+                    <Label translateY="6" text="Zurücksetzen: "/>
+                    <Button id="button-feder" onAction="#onResetFeder" text="Reset"/>
+                </HBox>
+            </VBox>
+        </Tab>
+        <!--Einstellungen von Sonstiges-->
+        <Tab text="Sonstiges" closable="false">
+            <VBox id="vbox-settings" layoutX="1300" layoutY="058" minWidth="200">
+                <VBox>
+                    <CheckBox fx:id="checkBoxDrawLine" selected="false" text="Verlaufslinie zeichnen"/>
+                </VBox>
+                <HBox>
+                    <VBox>
+                        <Label text="Wind (X): "/>
+                        <TextField fx:id="windX" maxWidth="60" text="0.0"/>
+                    </VBox>
+                    <VBox>
+                        <Label text="Wind (Y): "/>
+                        <TextField fx:id="windY" maxWidth="60" text="0.0"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+
+    <!-- Übersicht und Einstellung der Kugeln -->
+    <Label layoutX="1320" layoutY="360" text="Übersicht der Kugeln" style="-fx-font-size: 16px;" scaleY="-1"/>
+    <TabPane layoutX="1301" layoutY="0" maxWidth="197" scaleY="-1">
+        <!--Kugel ROT-->
+        <Tab text="Rot" closable="false">
+            <VBox id="vbox-settings" layoutX="1300" layoutY="058" minWidth="200">
+                <Label id="kugel-blau" maxWidth="150" text="Kugel Rot" style="-fx-text-fill:black;"/>
+                <Circle stroke="black" strokeType="INSIDE" fill="#ED5C75"
+                        radius="15"/>
+                <HBox>
+                    <Label text="Vx: "/>
+                    <Label fx:id="vecRedSpeedx" text="0.0 "/>
+                    <Label text=" Vy: "/>
+                    <Label fx:id="vecRedSpeedy" text="0.0 "/>
+                </HBox>
+                <VBox>
+                    <HBox>
+                        <Label text="Vek. X: "/>
+                        <Label fx:id="vecRedx" text="0.0 "/>
+                        <Label text=" Vek. Y: "/>
+                        <Label fx:id="vecRedy" text="0.0 "/>
+                    </HBox>
+                </VBox>
+                <Label text="Startposition: "/>
+                <HBox>
+                    <VBox>
+                        <Label text="(X) "/>
+                        <TextField fx:id="startpositionX" maxWidth="60" text="320.00"/>
+                    </VBox>
+                    <VBox>
+                        <Label text="(Y) "/>
+                        <TextField fx:id="startpositionY" maxWidth="60" text="640.00"/>
+                    </VBox>
+                </HBox>
+                <Label text="Startgeschwindigkeit: "/>
+                <HBox>
+                    <VBox>
+                        <Label text="(X) "/>
+                        <TextField fx:id="startSpeedX" maxWidth="60" text="0.0"/>
+                    </VBox>
+                    <VBox>
+                        <Label text="(Y) "/>
+                        <TextField fx:id="startSpeedY" maxWidth="60" text="0.0"/>
+                    </VBox>
+                </HBox>
+                <Label text="Masse (kg): "/>
+                <TextField fx:id="masseRed" maxWidth="60" text="1.0"/>
+            </VBox>
+        </Tab>
+
+        <!--Kugel BLAU -->
+        <Tab text="Blau" closable="false">
+            <VBox id="vbox-settings" layoutX="1300" layoutY="058" minWidth="200">
+                <Label id="kugel-blau" maxWidth="150" text="Kugel Blau"/>
+                <Circle stroke="black" strokeType="INSIDE" fill="#426EF5"
+                        radius="15"/>
+                <HBox>
+                    <Label text="Vx: "/>
+                    <Label fx:id="vecBlueSpeedx" text="0.0 "/>
+                    <Label text=" Vy: "/>
+                    <Label fx:id="vecBlueSpeedy" text="0.0 "/>
+                </HBox>
+
+                <VBox>
+                    <HBox>
+                        <Label text="Vek. X: "/>
+                        <Label fx:id="vecBluex" text="0.0 "/>
+                        <Label text=" Vek. Y: "/>
+                        <Label fx:id="vecBluey" text="0.0 "/>
+                    </HBox>
+                </VBox>
+                <Label text="Startposition: "/>
+                <HBox>
+                    <VBox>
+                        <Label text="(X) "/>
+                        <TextField fx:id="startpositionBlueX" maxWidth="60" text="120.00"/>
+                    </VBox>
+                    <VBox>
+                        <Label text="(Y) "/>
+                        <TextField fx:id="startpositionBlueY" maxWidth="60" text="115.00"/>
+                    </VBox>
+                </HBox>
+                <Label text="Startgeschwindigkeit: "/>
+                <HBox>
+                    <VBox>
+                        <Label text="(X) "/>
+                        <TextField fx:id="startSpeedBlueX" maxWidth="60" text="0.0"/>
+                    </VBox>
+                    <VBox>
+                        <Label text="(Y) "/>
+                        <TextField fx:id="startSpeedBlueY" maxWidth="60" text="0.0"/>
+                    </VBox>
+                </HBox>
+                <Label text="Masse (kg): "/>
+                <TextField fx:id="masseBlue" maxWidth="60" text="1.0"/>
+            </VBox>
+        </Tab>
+
+        <!--Kugel GRAU -->
+        <Tab text="Grau" closable="false">
+            <VBox id="vbox-settings" layoutX="1300" layoutY="058" minWidth="200">
+                <Label id="kugel-blau" maxWidth="150" text="Kugel Grau" style="-fx-text-fill: black;"/>
+                <Circle stroke="black" strokeType="INSIDE" fill="#BDC7E1"
+                        radius="30"></Circle>
+                <HBox>
+                    <Label text="Vx: "/>
+                    <Label fx:id="vecGreySpeedx" text="0.0 "/>
+                    <Label text=" Vy: "/>
+                    <Label fx:id="vecGreySpeedy" text="0.0 "/>
+                </HBox>
+
+                <VBox>
+                    <HBox>
+                        <Label text="Vek. X: "/>
+                        <Label fx:id="vecGreyx" text="0.0 "/>
+                        <Label text=" Vek. Y: "/>
+                        <Label fx:id="vecGreyy" text="0.0 "/>
+                    </HBox>
+                </VBox>
+                <Label text="Startposition: "/>
+                <HBox>
+                    <VBox>
+                        <Label text="(X) "/>
+                        <TextField fx:id="startpositionGreyX" maxWidth="60" text="990.00"/>
+                    </VBox>
+                    <VBox>
+                        <Label text="(Y) "/>
+                        <TextField fx:id="startpositionGreyY" maxWidth="60" text="546.00"/>
+                    </VBox>
+                </HBox>
+                <Label text="Startgeschwindigkeit: "/>
+                <HBox>
+                    <VBox>
+                        <Label text="(X) "/>
+                        <TextField fx:id="startSpeedGreyX" maxWidth="60" text="0.0"/>
+                    </VBox>
+                    <VBox>
+                        <Label text="(Y) "/>
+                        <TextField fx:id="startSpeedGreyY" maxWidth="60" text="0.0"/>
+                    </VBox>
+                </HBox>
+                <Label text="Masse (kg): "/>
+                <TextField fx:id="masseGrey" maxWidth="60" text="2.0"/>
+            </VBox>
+        </Tab>
+    </TabPane>
+</AnchorPane>
