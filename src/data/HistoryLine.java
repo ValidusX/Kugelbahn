@@ -13,7 +13,6 @@ public class HistoryLine {
         gc.setLineWidth(6);
         gc.strokeLine(circle.getLayoutX(), circle.getLayoutY(), circle.getLayoutX(),
                 circle.getLayoutY());
-        
     }
 
     //Verlaufslinie blaue Kugel
